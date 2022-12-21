@@ -863,5 +863,5 @@ MonoBehaviour:
   groundCheck: {fileID: 1648309943}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
-  groundCheckRadius: 0
+    m_Bits: 64
+  groundCheckRadius: 0.015

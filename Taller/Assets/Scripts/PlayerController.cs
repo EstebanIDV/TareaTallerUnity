@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
 
     private bool facingRight=true;
     private bool isGrounded=true;
+    private bool isDucking=false;
+
 
     void Awake()
     {
@@ -47,23 +49,32 @@ public class PlayerController : MonoBehaviour
 
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
+        float verticalInput= Input.GetAxisRaw("Vertical");
 
         if(Input.GetButtonDown("Jump")&& isGrounded == true){
             rigidbody.AddForce(Vector2.up*jumpforce, ForceMode2D.Impulse);
+        }else if(verticalInput<0f && isGrounded ==true){
+            isDucking = true;
+        }else if(verticalInput>=0f && isGrounded==true && isDucking==true){
+            isDucking=false;
         }
 
     }
 
     void FixedUpdate()
     {
-        float horizontalVelocity = movement.normalized.x*speed;
-        rigidbody.velocity = new Vector2(horizontalVelocity, rigidbody.velocity.y);
+        if(!isDucking){
+            float horizontalVelocity = movement.normalized.x*speed;
+            rigidbody.velocity = new Vector2(horizontalVelocity, rigidbody.velocity.y);
+        }
+        
     }
 
     void LateUpdate()
     {
         animator.SetBool("Walking", movement!=Vector2.zero);
         animator.SetBool("Jumped", !isGrounded);
+        animator.SetBool("Ducking", isDucking);
     }
 
     void Flip(){
