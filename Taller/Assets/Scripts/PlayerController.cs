@@ -5,12 +5,20 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float speed = 2.5f;
+    public float jumpforce;
+
+    public Transform groundCheck;
+    public LayerMask groundLayer;
+    public float groundCheckRadius;
+
     private Rigidbody2D rigidbody;
     private Animator animator;
 
     private Vector2 movement;
 
+
     private bool facingRight=true;
+    private bool isGrounded=true;
 
     void Awake()
     {
@@ -37,6 +45,13 @@ public class PlayerController : MonoBehaviour
             Flip();
         }
 
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+
+
+        if(Input.GetButtonDown("Jump")&& isGrounded == true){
+            rigidbody.AddForce(Vector2.up*jumpforce, ForceMode2D.Impulse);
+        }
+
     }
 
     void FixedUpdate()
@@ -48,6 +63,7 @@ public class PlayerController : MonoBehaviour
     void LateUpdate()
     {
         animator.SetBool("Walking", movement!=Vector2.zero);
+        animator.SetBool("Jumped", !isGrounded);
     }
 
     void Flip(){
